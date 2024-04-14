@@ -6,17 +6,17 @@ from .listener import AbstractIsoTpListener
 
 
 class Notifier:
-    def __init__(self, transport_layer: isotp.TransportLayer):
+    def __init__(self, socket: isotp.socket):
+        if socket is None:
+            raise TypeError
         self.rx_thread = None
         self._running = False
-        if transport_layer is None:
-            raise TypeError
-        self.transport_layer = transport_layer
+        self.socket = socket
         self.listeners = []
 
     def _rx_thread(self):
         while self._running:
-            if data := self.transport_layer.recv(block=False):
+            if data := self.socket.recv():
                 for listener in self.listeners:
                     listener.on_message_received(data)
 

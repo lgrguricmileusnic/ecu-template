@@ -9,7 +9,7 @@ class ECU:
         self._bus = can.Bus(interface, "socketcan", ignore_config=True)
         self._ecu = ECUModel()
         self.can_controller = CanController(self._bus, self._ecu)
-        self.uds_controller = UDSController(self._bus, self._ecu, rx_id=0x100, tx_id=0x101, canfd=False)
+        self.uds_controller = UDSController(interface, self._ecu, rx_id=0x100, tx_id=0x101, canfd=False)
 
     def start(self):
         self.can_controller.start()
