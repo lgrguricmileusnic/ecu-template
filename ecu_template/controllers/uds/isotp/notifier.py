@@ -1,11 +1,11 @@
-import time
+import threading
 
 import isotp
-import threading
-from .listener import AbstractIsoTpListener
+
+from .listener import IsoTpListener
 
 
-class Notifier:
+class IsoTpNotifier:
     def __init__(self, socket: isotp.socket):
         if socket is None:
             raise TypeError
@@ -31,8 +31,8 @@ class Notifier:
         if self.rx_thread is not None:
             self.rx_thread.join(timeout)
 
-    def add_listener(self, listener: AbstractIsoTpListener):
+    def add_listener(self, listener: IsoTpListener):
         self.listeners.append(listener)
 
-    def remove_listener(self, listener: AbstractIsoTpListener):
+    def remove_listener(self, listener: IsoTpListener):
         self.listeners.remove(listener)
