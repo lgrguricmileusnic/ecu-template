@@ -8,3 +8,7 @@ class Handler(metaclass=ABCMeta):
     @abstractmethod
     def handle_msg(self, msg):
         pass
+
+    @abstractmethod
+    def set_socket(self, socket):
+        pass

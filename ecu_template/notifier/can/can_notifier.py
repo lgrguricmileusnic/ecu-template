@@ -1,12 +1,15 @@
 import threading
 
-import isotp
+from scapy.contrib.cansocket_native import NativeCANSocket
 
-from .listener import IsoTpListener
+from ecu_template.listener.can.can_listener import CanListener
+from ..notifier import Notifier
+
+THREAD_NAME = "CANNotifier"
 
 
-class IsoTpNotifier:
-    def __init__(self, socket: isotp.socket):
+class CanNotifier(Notifier):
+    def __init__(self, socket: NativeCANSocket):
         if socket is None:
             raise TypeError
         self.rx_thread = None
@@ -16,23 +19,23 @@ class IsoTpNotifier:
 
     def _rx_thread(self):
         while self._running:
-            if data := self.socket.recv():
+            if packet := self.socket.recv():
                 for listener in self.listeners:
-                    listener.on_message_received(data)
+                    listener.on_message_received(packet)
 
     def start(self):
         self._running = True
-        self.rx_thread = threading.Thread(target=self._rx_thread, name="isotp.notifier")
+        self.rx_thread = threading.Thread(target=self._rx_thread, name=THREAD_NAME)
         self.rx_thread.daemon = True
         self.rx_thread.start()
 
-    def stop(self, timeout: float = 5.0):
+    def stop(self, timeout: float = 1.0):
         self._running = False
         if self.rx_thread is not None:
             self.rx_thread.join(timeout)
 
-    def add_listener(self, listener: IsoTpListener):
+    def add_listener(self, listener: CanListener):
         self.listeners.append(listener)
 
-    def remove_listener(self, listener: IsoTpListener):
+    def remove_listener(self, listener: CanListener):
         self.listeners.remove(listener)

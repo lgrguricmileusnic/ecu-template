@@ -1,27 +1,40 @@
 import argparse
 
-import isotp
-
+import impl.config as config
 from ecu_template.ecu import ECU
-from ecu_template.handlers.can.simple_can_handler import SimpleCanHandler
-from ecu_template.handlers.uds.simple_uds_handler import SimpleUDSHandler
-from ecu_template.models.simple_ecu_model import SimpleECUModel
+from impl.can_handler import CanHandlerImpl
+from impl.ecu_model import ECUModelImpl
+from impl.uds_handler import UDSHandlerImpl
 
-if __name__ == "__main__":
+
+def loop(_ecu: ECU):
+    _ecu.start()
+    try:
+        while True:
+            pass
+    except KeyboardInterrupt:
+        print("Shutting down...")
+        _ecu.stop()
+
+
+def main():
     argparser = argparse.ArgumentParser()
     argparser.add_argument("interface", default="vcan0", type=str, nargs="?")
     argparser.add_argument("canfd", default=False, type=bool, nargs="?")
     args = argparser.parse_args()
 
-    ecu = ECU(interface=args.interface,
-              canfd=args.canfd,
-              can_handler=SimpleCanHandler(SimpleECUModel()),
-              uds_handler=SimpleUDSHandler(SimpleECUModel()),
-              uds_address=isotp.Address(addressing_mode=isotp.AddressingMode.Normal_11bits, rxid=0x100, txid=0x101))
+    ecu_model = ECUModelImpl()
+    ecu = ECU(
+        interface=args.interface,
+        canfd=args.canfd,
+        can_handler=CanHandlerImpl(ecu_model),
+        uds_handler=UDSHandlerImpl(ecu_model),
+        uds_config=config.UDS,
+        can_filters=config.CAN_FILTERS,
+    )
 
-    ecu.start()
-    try:
-        while True:
-            pass
-    except KeyboardInterrupt:
-        ecu.stop()
+    loop(ecu)
+
+
+if __name__ == "__main__":
+    main()
