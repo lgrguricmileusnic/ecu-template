@@ -1,9 +1,11 @@
-from abc import ABCMeta, abstractmethod
+from abc import abstractmethod
 
 from scapy.contrib.automotive.uds import UDS
 
+from ecu_template.listener.listener import PacketListener
 
-class UDSListener(metaclass=ABCMeta):
+
+class UDSListener(metaclass=PacketListener):
     def __init__(self):
         pass
 

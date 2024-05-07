@@ -1,21 +1,23 @@
 from abc import abstractmethod
 
+from scapy.contrib.automotive.xcp.xcp import XCPOnCAN
 from scapy.contrib.cansocket_native import NativeCANSocket
-from scapy.layers.can import CAN
 
 from ecu_template.model.ecu_model import ECUModel
-from ..handler import Handler
+from ..can.can_handler import CanHandler
 
 
-class CanHandler(Handler):
+class XCPHandler(CanHandler):
     def __init__(self, ecu: ECUModel):
-        super().__init__()
+        super().__init__(ecu)
         self.socket = None
         self.ecu = ecu
 
     @abstractmethod
-    def handle_msg(self, msg: CAN):
+    def handle_msg(self, msg):
         raise NotImplementedError
 
     def set_socket(self, socket: NativeCANSocket):
-        self.socket = socket
+        if not isinstance(socket.basecls, XCPOnCAN):
+            raise TypeError
+        super().set_socket(socket)

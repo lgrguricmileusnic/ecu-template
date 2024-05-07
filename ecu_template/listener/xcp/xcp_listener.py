@@ -1,14 +1,14 @@
 from abc import abstractmethod
 
-from scapy.layers.can import CAN
+from scapy.contrib.automotive.xcp.xcp import XCPOnCAN
 
 from ecu_template.listener.listener import PacketListener
 
 
-class CanListener(metaclass=PacketListener):
+class XCPListener(metaclass=PacketListener):
     def __init__(self):
         pass
 
     @abstractmethod
-    def on_message_received(self, packet: CAN):
+    def on_message_received(self, packet: XCPOnCAN):
         pass
