@@ -7,4 +7,4 @@ class XCPHandlerImpl(XCPHandler):
         super().__init__(ecu)
 
     def handle_msg(self, msg):
-        pass
+        print(msg)

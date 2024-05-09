@@ -5,9 +5,12 @@ from scapy.contrib.isotp.isotp_native_socket import ISOTPNativeSocket
 from ecu_template.controller.can.can_controller import CanController
 from ecu_template.controller.uds.uds_controller import UDSController
 from ecu_template.notifier.uds.uds_notifier import UDSNotifier
+from .controller.xcp.xcp_controller import XCPController
 from .handler.can.can_handler import CanHandler
 from .handler.uds.uds_handler import UDSHandler
+from .handler.xcp.xcp_handler import XCPHandler
 from .notifier.can.can_notifier import CanNotifier
+from .notifier.xcp.xcp_notifier import XCPNotifier
 
 PYTHON_CAN_INTERFACE = "socketcan"
 
@@ -21,6 +24,8 @@ class ECU:
         can_filters: list,
         uds_handler: UDSHandler,
         uds_config: dict,
+        xcp_handler: XCPHandler,
+        xcp_config: dict,
     ):
 
         self.controllers = []
@@ -40,6 +45,12 @@ class ECU:
             uds_handler.set_socket(isotp_socket)
             self.controllers.append(
                 UDSController(uds_handler, UDSNotifier(socket=isotp_socket))
+            )
+        if xcp_handler is not None and xcp_config is not None:
+            xcp_socket = NativeCANSocket(channel=interface)
+            xcp_handler.set_socket(xcp_socket)
+            self.controllers.append(
+                XCPController(xcp_handler, XCPNotifier(socket=xcp_socket))
             )
 
     def start(self):
