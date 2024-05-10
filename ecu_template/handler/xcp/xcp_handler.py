@@ -14,7 +14,7 @@ class XCPHandler(CanHandler):
         self.ecu = ecu
 
     @abstractmethod
-    def handle_msg(self, msg):
+    def handle_msg(self, msg: XCPOnCAN):
         raise NotImplementedError
 
     def set_socket(self, socket: NativeCANSocket):

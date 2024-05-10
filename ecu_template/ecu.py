@@ -13,8 +13,6 @@ from .handler.xcp.xcp_handler import XCPHandler
 from .notifier.can.can_notifier import CanNotifier
 from .notifier.xcp.xcp_notifier import XCPNotifier
 
-PYTHON_CAN_INTERFACE = "socketcan"
-
 
 class ECU:
     def __init__(
