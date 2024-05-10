@@ -18,6 +18,6 @@ class XCPHandler(CanHandler):
         raise NotImplementedError
 
     def set_socket(self, socket: NativeCANSocket):
-        if not isinstance(socket.basecls, XCPOnCAN):
+        if not socket.basecls == XCPOnCAN:
             raise TypeError
         super().set_socket(socket)

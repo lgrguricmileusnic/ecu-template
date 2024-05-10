@@ -5,9 +5,9 @@ from scapy.layers.can import CAN
 from ecu_template.listener.listener import PacketListener
 
 
-class CanListener(metaclass=PacketListener):
+class CanListener(PacketListener):
     def __init__(self):
-        pass
+        super().__init__()
 
     @abstractmethod
     def on_message_received(self, packet: CAN):

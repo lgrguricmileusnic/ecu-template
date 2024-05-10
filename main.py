@@ -5,6 +5,7 @@ from ecu_template.ecu import ECU
 from impl.can_handler import CanHandlerImpl
 from impl.ecu_model import ECUModelImpl
 from impl.uds_handler import UDSHandlerImpl
+from impl.xcp_handler import XCPHandlerImpl
 
 
 def loop(_ecu: ECU):
@@ -31,6 +32,8 @@ def main():
         uds_handler=UDSHandlerImpl(ecu_model),
         uds_config=config.UDS,
         can_filters=config.CAN_FILTERS,
+        xcp_handler=XCPHandlerImpl(ecu_model),
+        xcp_config=config.XCP,
     )
 
     loop(ecu)

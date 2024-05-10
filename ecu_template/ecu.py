@@ -1,4 +1,5 @@
 from scapy.contrib.automotive.uds import UDS
+from scapy.contrib.automotive.xcp.xcp import XCPOnCAN
 from scapy.contrib.cansocket_native import NativeCANSocket
 from scapy.contrib.isotp.isotp_native_socket import ISOTPNativeSocket
 
@@ -25,7 +26,7 @@ class ECU:
         uds_handler: UDSHandler,
         uds_config: dict,
         xcp_handler: XCPHandler,
-        xcp_config: dict,
+        xcp_config: list,
     ):
 
         self.controllers = []
@@ -47,7 +48,9 @@ class ECU:
                 UDSController(uds_handler, UDSNotifier(socket=isotp_socket))
             )
         if xcp_handler is not None and xcp_config is not None:
-            xcp_socket = NativeCANSocket(channel=interface)
+            xcp_socket = NativeCANSocket(
+                channel=interface, can_filters=xcp_config, basecls=XCPOnCAN
+            )
             xcp_handler.set_socket(xcp_socket)
             self.controllers.append(
                 XCPController(xcp_handler, XCPNotifier(socket=xcp_socket))
