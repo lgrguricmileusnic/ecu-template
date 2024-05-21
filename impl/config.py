@@ -7,5 +7,5 @@ CAN_FILTERS = [
 UDS = dict(rx_id=0x100, tx_id=0x101)
 
 XCP = [
-    {"can_id": 0x700, "can_mask": 0x7FF},
+    {"can_id": 0x701, "can_mask": 0x7FF},
 ]
